@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Date Invite ❤️</title>
+
+<style>
+
+/* ===== Background Animation ===== */
+body{
+    margin:0;
+    font-family:sans-serif;
+    color:white;
+    text-align:center;
+    overflow-x:hidden;
+
+    background: linear-gradient(-45deg,#ff4d6d,#c9184a,#720026,#ff758f);
+    background-size:400% 400%;
+    animation:bgMove 12s ease infinite;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* ===== Floating Hearts ===== */
+.heart{
+    position:fixed;
+    bottom:-20px;
+    font-size:20px;
+    animation: floatUp linear infinite;
+}
+@keyframes floatUp{
+    to{
+        transform:translateY(-110vh);
+        opacity:0;
+    }
+}
+
+/* ===== Card ===== */
+.card{
+    background:rgba(0,0,0,.45);
+    margin:40px auto;
+    padding:25px;
+    border-radius:12px;
+    max-width:420px;
+}
+
+/* ===== Buttons ===== */
+button{
+    padding:12px 22px;
+    border:none;
+    border-radius:8px;
+    background:#ff4d6d;
+    color:white;
+    font-size:16px;
+    margin-top:15px;
+}
+
+/* ===== Reveal Section ===== */
+#reveal{ display:none; }
+
+/* ===== Countdown ===== */
+.timer{font-size:22px;margin-top:10px;}
+
+img{
+    width:100%;
+    border-radius:12px;
+    margin-top:10px;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="card">
+
+<h1>Will you go on a date with me? ❤️</h1>
+
+<div id="countdown" class="timer"></div>
+
+<button onclick="accept()">Accept ❤️</button>
+
+<div id="reveal">
+
+<h2>Our Plan ✨</h2>
+
+<p>
+Mind Museum Adventure 🧠<br>
+Dinner at Arcovia 🍽️
+</p>
+
+<!-- Google Maps -->
+<a target="_blank"
+href="PASTE_GOOGLE_MAP_LINK">
+<button>Open Map</button>
+</a>
+
+<!-- Slideshow Images -->
+<img src="https://picsum.photos/400/250?1">
+<img src="https://picsum.photos/400/250?2">
+
+<!-- Spotify Embed -->
+<iframe style="border-radius:12px"
+src="PASTE_SPOTIFY_EMBED"
+width="100%" height="80"
+frameBorder="0"
+allow="autoplay; clipboard-write; encrypted-media;">
+</iframe>
+
+</div>
+</div>
+
+
+<script>
+
+/* ===== Countdown ===== */
+const target=new Date("Feb 14, 2026 18:00:00").getTime();
+setInterval(()=>{
+let now=new Date().getTime();
+let diff=target-now;
+
+let d=Math.floor(diff/(1000*60*60*24));
+let h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+let m=Math.floor((diff%(1000*60*60))/(1000*60));
+
+document.getElementById("countdown").innerHTML=
+`${d}d ${h}h ${m}m`;
+
+},1000);
+
+/* ===== Hearts Generator ===== */
+setInterval(()=>{
+let h=document.createElement("div");
+h.className="heart";
+h.innerHTML="❤️";
+h.style.left=Math.random()*100+"vw";
+h.style.animationDuration=(3+Math.random()*5)+"s";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),8000);
+},400);
+
+/* ===== Accept Action ===== */
+function accept(){
+document.getElementById("reveal").style.display="block";
+confetti();
+}
+
+/* ===== Confetti ===== */
+function confetti(){
+for(let i=0;i<60;i++){
+let c=document.createElement("div");
+c.innerHTML="🎉";
+c.style.position="fixed";
+c.style.left=Math.random()*100+"vw";
+c.style.top=Math.random()*50+"vh";
+c.style.fontSize="24px";
+document.body.appendChild(c);
+setTimeout(()=>c.remove(),1500);
+}
+}
+
+</script>
+
+</body>
+</html>
