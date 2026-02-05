@@ -6,77 +6,95 @@
 
 <style>
 body{
-    margin:0;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:#7a001f;
-    font-family:sans-serif;
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#7a001f;
+font-family:sans-serif;
+overflow:hidden;
 }
 
 /* Envelope */
 .envelope{
-    width:320px;
-    height:220px;
-    background:#ff758f;
-    position:relative;
-    border-radius:6px;
-    box-shadow:0 10px 25px rgba(0,0,0,.4);
+position:relative;
+width:320px;
+height:200px;
+background:#ff758f;
+border-radius:8px;
+cursor:pointer;
 }
 
-/* Top flap */
-.envelope:before{
-    content:"";
-    position:absolute;
-    top:0;
-    left:0;
-    border-left:160px solid transparent;
-    border-right:160px solid transparent;
-    border-top:110px solid #ff4d6d;
+/* Flap */
+.flap{
+position:absolute;
+width:0;
+height:0;
+border-left:160px solid transparent;
+border-right:160px solid transparent;
+border-bottom:100px solid #ff4d6d;
+top:-100px;
+transform-origin:bottom;
+transition:1s;
 }
 
-/* Content */
-.card{
-    position:absolute;
-    top:30px;
-    left:20px;
-    right:20px;
-    text-align:center;
-    color:white;
+/* Letter */
+.letter{
+position:absolute;
+width:280px;
+height:160px;
+background:white;
+color:#ff4d6d;
+left:20px;
+top:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+font-weight:bold;
+transition:1s;
+}
+
+.open .flap{
+transform:rotateX(180deg);
+}
+
+.open .letter{
+transform:translateY(-160px);
 }
 
 button{
-    margin-top:15px;
-    padding:10px 20px;
-    border:none;
-    border-radius:6px;
-    background:white;
-    color:#ff4d6d;
-    font-weight:bold;
-    font-size:16px;
+position:absolute;
+bottom:-60px;
+left:50%;
+transform:translateX(-50%);
+padding:12px 20px;
+border:none;
+border-radius:8px;
+background:white;
+color:#ff4d6d;
+font-weight:bold;
+display:none;
 }
 
-/* Responsive */
-@media(max-width:400px){
-    .envelope{
-        transform:scale(.9);
-    }
+.open button{
+display:block;
 }
 </style>
 </head>
 
 <body>
 
-<div class="envelope">
+<div id="env" class="envelope" onclick="openEnv()">
+<div class="flap"></div>
 
-<div class="card">
-
-<h2 id="title"></h2>
-
-<button onclick="go()">Accept ❤️</button>
-
+<div class="letter">
+<span id="title"></span>
 </div>
+
+<button onclick="go(event)">Accept ❤️</button>
+
 </div>
 
 <script src="config.js"></script>
@@ -84,8 +102,13 @@ button{
 <script>
 document.getElementById("title").innerText = CONFIG.title;
 
-function go(){
-    window.location.href="details.html";
+function openEnv(){
+document.getElementById("env").classList.add("open");
+}
+
+function go(e){
+e.stopPropagation();
+window.location.href="details.html";
 }
 </script>
 
