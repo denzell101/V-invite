@@ -41,6 +41,7 @@ border-radius:12px;
 margin-top:12px;
 }
 
+/* Buttons */
 button{
 width:100%;
 padding:12px;
@@ -102,23 +103,22 @@ if(i<msg.length){
 document.getElementById("type").innerHTML += msg.charAt(i);
 i++;
 setTimeout(type,40);
-}
-}
+}}
 type();
 
-/* Details */
-document.getElementById("details").innerText=CONFIG.details;
+/* Inject details */
+document.getElementById("details").innerText = CONFIG.details;
 
 /* Slideshow */
 let idx=0;
 function show(){
-document.getElementById("slide").src=CONFIG.photos[idx];
-idx=(idx+1)%CONFIG.photos.length;
+document.getElementById("slide").src = CONFIG.photos[idx];
+idx = (idx + 1) % CONFIG.photos.length;
 }
 show();
 setInterval(show,2500);
 
-/* Maps */
+/* Map buttons */
 CONFIG.locations.forEach(loc=>{
 let b=document.createElement("button");
 b.innerText="Open Map: "+loc.name;
@@ -127,7 +127,7 @@ document.getElementById("maps").appendChild(b);
 });
 
 /* Music */
-document.getElementById("music").src=CONFIG.musicEmbed;
+document.getElementById("music").src = CONFIG.musicEmbed;
 
 </script>
 
