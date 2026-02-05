@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Date ❤️</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#111;
+    color:white;
+    text-align:center;
+    font-family:sans-serif;
+    overflow-x:hidden;
+}
+
+/* Floating hearts */
+.heart{
+    position:fixed;
+    bottom:-20px;
+    font-size:20px;
+    animation: float 6s linear infinite;
+}
+
+@keyframes float{
+    to{
+        transform:translateY(-110vh);
+        opacity:0;
+    }
+}
+
+/* Card */
+.card{
+    background:#222;
+    margin:30px auto;
+    padding:25px;
+    border-radius:12px;
+    max-width:420px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    background:#ff4d6d;
+    color:white;
+    font-size:16px;
+}
+
+iframe{
+    width:100%;
+    height:80px;
+    margin-top:15px;
+    border-radius:12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2 id="message"></h2>
+
+<p id="details"></p>
+
+<div id="maps"></div>
+
+<iframe id="music" frameborder="0"
+allow="autoplay; encrypted-media"></iframe>
+
+</div>
+
+<script src="config.js"></script>
+
+<script>
+
+/* Inject text */
+document.getElementById("message").innerText = CONFIG.message;
+document.getElementById("details").innerText = CONFIG.details;
+document.getElementById("music").src = CONFIG.musicEmbed;
+
+/* Maps */
+CONFIG.locations.forEach(loc=>{
+    let b=document.createElement("button");
+    b.innerText="Open Map: "+loc.name;
+    b.onclick=()=>window.open(loc.link,"_blank");
+    document.getElementById("maps").appendChild(b);
+});
+
+/* Hearts generator */
+setInterval(()=>{
+    let h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="❤️";
+    h.style.left=Math.random()*100+"vw";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+},300);
+
+</script>
+
+</body>
+</html>
