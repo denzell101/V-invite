@@ -14,6 +14,13 @@ date: "Feb 15, 2026 13:00:00",
 /* YouTube EMBED format required */
 musicEmbed: "https://www.youtube.com/embed/u9raS7-NisU?autoplay=1&mute=1&rel=0",
 
+/* Our pictures */
+photos: [
+    "pic1.jpg",
+    "pic2.jpg",
+    "pic3.jpg"
+],
+    
 locations: [
 {
     name: "The Mind Museum",
