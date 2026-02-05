@@ -2,155 +2,91 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Date Invite ❤️</title>
+<title>Invite ❤️</title>
 
 <style>
-
-/* ===== Background Animation ===== */
 body{
     margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#7a001f;
     font-family:sans-serif;
-    color:white;
-    text-align:center;
-    background: linear-gradient(-45deg,#ff4d6d,#c9184a,#720026,#ff758f);
-    background-size:400% 400%;
-    animation:bgMove 12s ease infinite;
 }
 
-@keyframes bgMove{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
+/* Envelope */
+.envelope{
+    width:320px;
+    height:220px;
+    background:#ff758f;
+    position:relative;
+    border-radius:6px;
+    box-shadow:0 10px 25px rgba(0,0,0,.4);
 }
 
-/* ===== Card ===== */
+/* Top flap */
+.envelope:before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    border-left:160px solid transparent;
+    border-right:160px solid transparent;
+    border-top:110px solid #ff4d6d;
+}
+
+/* Content */
 .card{
-    background:rgba(0,0,0,.45);
-    margin:40px auto;
-    padding:25px;
-    border-radius:12px;
-    max-width:420px;
-}
-
-/* ===== Buttons ===== */
-button{
-    display:block;
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    background:#ff4d6d;
+    position:absolute;
+    top:30px;
+    left:20px;
+    right:20px;
+    text-align:center;
     color:white;
+}
+
+button{
+    margin-top:15px;
+    padding:10px 20px;
+    border:none;
+    border-radius:6px;
+    background:white;
+    color:#ff4d6d;
+    font-weight:bold;
     font-size:16px;
-    margin-top:10px;
 }
 
-/* ===== Reveal Section ===== */
-#reveal{ display:none; }
-
-/* ===== Countdown ===== */
-.timer{
-    font-size:22px;
-    margin-top:10px;
+/* Responsive */
+@media(max-width:400px){
+    .envelope{
+        transform:scale(.9);
+    }
 }
-
-/* ===== Responsive Video ===== */
-iframe{
-    width:100%;
-    height:80px;
-    border-radius:12px;
-    margin-top:12px;
-}
-
 </style>
 </head>
 
-
 <body>
+
+<div class="envelope">
 
 <div class="card">
 
-<h1 id="title"></h1>
+<h2 id="title"></h2>
 
-<div id="countdown" class="timer"></div>
-
-<button onclick="accept()">Accept ❤️</button>
-
-<div id="reveal">
-
-<h2 id="details"></h2>
-
-<!-- Map buttons injected here -->
-<div id="mapButtons"></div>
-
-<!-- Music -->
-<iframe id="music"
-frameborder="0"
-allow="autoplay; encrypted-media">
-</iframe>
+<button onclick="go()">Accept ❤️</button>
 
 </div>
-
 </div>
 
-
-<!-- CONFIG LOAD -->
 <script src="config.js"></script>
 
 <script>
-
-/* ===== Inject Config Values ===== */
-
 document.getElementById("title").innerText = CONFIG.title;
-document.getElementById("details").innerText = CONFIG.details;
-document.getElementById("music").src = CONFIG.musicEmbed;
 
-
-/* ===== Countdown ===== */
-
-const target = new Date(CONFIG.date).getTime();
-
-setInterval(()=>{
-    let now = new Date().getTime();
-    let diff = target - now;
-
-    if(diff <= 0){
-        document.getElementById("countdown").innerHTML="It's time ❤️";
-        return;
-    }
-
-    let d=Math.floor(diff/(1000*60*60*24));
-    let h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
-    let m=Math.floor((diff%(1000*60*60))/(1000*60));
-
-    document.getElementById("countdown").innerHTML =
-        `${d}d ${h}h ${m}m`;
-
-},1000);
-
-
-/* ===== Render Map Buttons ===== */
-
-const mapContainer = document.getElementById("mapButtons");
-
-CONFIG.locations.forEach(loc=>{
-    const btn = document.createElement("button");
-    btn.innerText = "Open Map: " + loc.name;
-
-    btn.onclick = () => {
-        window.open(loc.link, "_blank");
-    };
-
-    mapContainer.appendChild(btn);
-});
-
-
-/* ===== Reveal ===== */
-
-function accept(){
-    document.getElementById("reveal").style.display="block";
+function go(){
+    window.location.href="details.html";
 }
-
 </script>
 
 </body>
