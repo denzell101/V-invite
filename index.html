@@ -2,40 +2,49 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Romantic Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+
 <title>Invite ❤️</title>
 
 <style>
+
 body{
 margin:0;
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:#7a001f;
-font-family:sans-serif;
+background:radial-gradient(circle,#ffafbd,#ffc3a0);
+font-family:Montserrat;
 overflow:hidden;
 }
 
-/* Envelope */
+/* 3D Envelope */
+.scene{
+perspective:900px;
+}
+
 .envelope{
-position:relative;
 width:320px;
 height:200px;
-background:#ff758f;
-border-radius:8px;
-cursor:pointer;
+background:#ff4d6d;
+position:relative;
+transform-style:preserve-3d;
+transition:1s;
+border-radius:10px;
+box-shadow:0 20px 40px rgba(0,0,0,.3);
 }
 
 /* Flap */
 .flap{
 position:absolute;
-width:0;
-height:0;
-border-left:160px solid transparent;
-border-right:160px solid transparent;
-border-bottom:100px solid #ff4d6d;
-top:-100px;
-transform-origin:bottom;
+width:100%;
+height:100px;
+background:#ff758f;
+top:0;
+transform-origin:top;
 transition:1s;
 }
 
@@ -45,31 +54,30 @@ position:absolute;
 width:280px;
 height:160px;
 background:white;
-color:#ff4d6d;
-left:20px;
 top:20px;
+left:20px;
 display:flex;
 justify-content:center;
 align-items:center;
-text-align:center;
-font-weight:bold;
+font-family:"Great Vibes";
+font-size:26px;
+color:#ff4d6d;
 transition:1s;
 }
 
+/* Open state */
 .open .flap{
-transform:rotateX(180deg);
+transform:rotateX(-160deg);
 }
 
 .open .letter{
-transform:translateY(-160px);
+transform:translateY(-170px);
 }
 
+/* Button */
 button{
-position:absolute;
-bottom:-60px;
-left:50%;
-transform:translateX(-50%);
-padding:12px 20px;
+margin-top:15px;
+padding:12px 22px;
 border:none;
 border-radius:8px;
 background:white;
@@ -81,12 +89,28 @@ display:none;
 .open button{
 display:block;
 }
+
+.toggle{
+position:absolute;
+top:10px;
+right:10px;
+cursor:pointer;
+}
+
+.dark{
+background:#111;
+}
+
 </style>
 </head>
 
 <body>
 
-<div id="env" class="envelope" onclick="openEnv()">
+<div class="toggle" onclick="toggleMode()">🌓</div>
+
+<div class="scene" onclick="openEnv()">
+
+<div id="env" class="envelope">
 
 <div class="flap"></div>
 
@@ -94,23 +118,44 @@ display:block;
 <span id="title"></span>
 </div>
 
-<button onclick="go(event)">Accept ❤️</button>
+<button onclick="accept(event)">Accept ❤️</button>
 
+</div>
 </div>
 
 <script src="config.js"></script>
 
 <script>
-document.getElementById("title").innerText = CONFIG.title;
+
+document.getElementById("title").innerText=CONFIG.title;
 
 function openEnv(){
 document.getElementById("env").classList.add("open");
 }
 
-function go(e){
+function accept(e){
 e.stopPropagation();
-window.location.href="details.html";
+
+/* Confetti */
+for(let i=0;i<60;i++){
+let c=document.createElement("div");
+c.innerHTML="🎉";
+c.style.position="fixed";
+c.style.left=Math.random()*100+"vw";
+c.style.top=Math.random()*100+"vh";
+document.body.appendChild(c);
+setTimeout(()=>c.remove(),1000);
 }
+
+setTimeout(()=>{
+window.location="details.html";
+},800);
+}
+
+function toggleMode(){
+document.body.classList.toggle("dark");
+}
+
 </script>
 
 </body>
