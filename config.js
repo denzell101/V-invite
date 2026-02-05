@@ -3,7 +3,7 @@ const CONFIG = {
 title: "Will you be my valentine? ❤️",
 
 message:
-"Hi Baby ❤️\n\nI know you wanted something like this, so I've made you one. Please remember that in every Valentine's, I will always choose you for my date :) I love you so much baby!",
+"Hi Baby ❤️\n\nI know you wanted something like this, so I've made you one. \nPlease remember that in every Valentine's, I will always choose you for my date :) \n\n P.S. I love you so much baby!",
     
 details:
 `Mind Museum Adventure 🧠
