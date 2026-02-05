@@ -5,125 +5,51 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
 
-<title>Invite</title>
-
 <style>
-
-body{
-margin:0;
-overflow:hidden;
-font-family:Quicksand;
-}
+body{margin:0;font-family:Quicksand;overflow:hidden}
 
 /* SKY */
-.sky{
-position:fixed;
-width:100%;
-height:100%;
-z-index:-1;
-overflow:hidden;
-}
+.sky{position:fixed;width:100%;height:100%;z-index:-2;overflow:hidden}
+.cloud{position:absolute;width:160%;opacity:.8;animation:drift linear infinite}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-40%)}}
 
-.cloud{
+/* STARS */
+.star{
 position:absolute;
-width:130%;
-opacity:.9;
+width:3px;height:3px;
+background:white;
+border-radius:50%;
+box-shadow:0 0 6px white;
+animation:twinkle 2s infinite alternate
 }
+@keyframes twinkle{from{opacity:.2}to{opacity:1}}
 
 .sun,.moon{
 position:absolute;
-width:140px;
+width:130px;
 top:60px;
 right:60px;
-transition:opacity 1s;
+transition:opacity 1s
 }
 
-.sun{filter:drop-shadow(0 0 35px gold);}
-.moon{filter:drop-shadow(0 0 25px white);opacity:0;}
+/* ENVELOPE */
+.center{height:100vh;display:flex;align-items:center;justify-content:center}
+.envelope{width:360px;height:220px;background:#ff4d6d;border-radius:12px;cursor:pointer;position:relative;perspective:800px}
+.flap{height:120px;background:#ff758f;transform-origin:top;transition:.8s}
+.letter{background:white;width:320px;height:170px;position:absolute;top:25px;left:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Playfair Display";font-size:24px;color:#ff4d6d;transition:.8s}
+.open .flap{transform:rotateX(-160deg)}
+.open .letter{transform:translateY(-180px)}
 
-/* stars */
-.star{
-position:absolute;
-width:2px;height:2px;
-background:white;
-border-radius:50%;
-animation:twinkle 2s infinite alternate;
-}
-@keyframes twinkle{
-from{opacity:.2}
-to{opacity:1}
-}
+button{margin-top:12px;padding:12px 28px;border:none;border-radius:8px;background:#ff4d6d;color:white;font-size:15px}
 
-/* envelope */
-.center{
-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-}
+.toggle{position:absolute;top:15px;right:20px;font-size:22px;cursor:pointer}
 
-.envelope{
-width:340px;
-height:210px;
-background:#ff4d6d;
-border-radius:10px;
-cursor:pointer;
-position:relative;
-}
+/* CONFETTI */
+.confetti{position:fixed;top:-10px;font-size:18px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh)}}
 
-.flap{
-height:110px;
-background:#ff758f;
-transform-origin:top;
-transition:1s;
-}
-
-.letter{
-background:white;
-width:300px;
-height:160px;
-position:absolute;
-top:25px;
-left:20px;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-font-family:"Playfair Display";
-font-size:24px;
-color:#ff4d6d;
-transition:1s;
-}
-
-.open .flap{transform:rotateX(-170deg);}
-.open .letter{transform:translateY(-170px);}
-
-button{
-margin-top:12px;
-padding:10px 24px;
-border:none;
-border-radius:8px;
-background:#ff4d6d;
-color:white;
-}
-
-.toggle{
-position:absolute;
-top:15px;
-right:20px;
-font-size:22px;
-cursor:pointer;
-}
-
-/* confetti rain */
-.confetti{
-position:fixed;
-top:-10px;
-animation:fall linear forwards;
-}
-@keyframes fall{
-to{transform:translateY(110vh);}
-}
+/* COUNTDOWN */
+.timer{margin-top:10px;font-size:14px;color:#aa3355}
 
 </style>
 </head>
@@ -140,6 +66,7 @@ to{transform:translateY(110vh);}
 
 <div class="letter">
 <span id="title"></span>
+<div id="countdown" class="timer"></div>
 <button onclick="accept(event)">Accept ❤️</button>
 </div>
 </div>
@@ -149,18 +76,27 @@ to{transform:translateY(110vh);}
 
 <script>
 
-/* Title */
-document.getElementById("title").innerText=CONFIG.title;
+/* TITLE */
+title.innerText=CONFIG.title;
 
-/* Build sky */
-const sky=document.getElementById("sky");
+/* COUNTDOWN */
+const target=new Date(CONFIG.date).getTime();
+setInterval(()=>{
+let now=new Date().getTime();
+let d=target-now;
+let days=Math.floor(d/(1000*60*60*24));
+let hrs=Math.floor((d%(1000*60*60*24))/(1000*60*60));
+let min=Math.floor((d%(1000*60*60))/(1000*60));
+countdown.innerText=`${days}d ${hrs}h ${min}m`;
+},1000);
 
+/* SKY BUILD */
 CONFIG.sky.clouds.forEach((c,i)=>{
 let img=document.createElement("img");
 img.src=c;
 img.className="cloud";
-img.style.top=(20+i*20)+"%";
-img.style.animation=`drift${i} ${60+i*20}s linear infinite`;
+img.style.top=(10+i*20)+"%";
+img.style.animationDuration=(60+i*20)+"s";
 sky.appendChild(img);
 });
 
@@ -172,10 +108,11 @@ sky.appendChild(sun);
 let moon=document.createElement("img");
 moon.src=CONFIG.sky.moon;
 moon.className="moon";
+moon.style.opacity=0;
 sky.appendChild(moon);
 
-/* stars */
-for(let i=0;i<120;i++){
+/* STARS */
+for(let i=0;i<150;i++){
 let s=document.createElement("div");
 s.className="star";
 s.style.left=Math.random()*100+"vw";
@@ -183,7 +120,7 @@ s.style.top=Math.random()*100+"vh";
 document.body.appendChild(s);
 }
 
-/* mode */
+/* MODE */
 let mode=localStorage.getItem("mode")||"day";
 apply();
 
@@ -198,10 +135,10 @@ sun.style.opacity=(mode==="day")?1:0;
 moon.style.opacity=(mode==="night")?1:0;
 }
 
-/* envelope */
+/* ENVELOPE */
 function openEnv(){env.classList.add("open");}
 
-/* confetti */
+/* CONFETTI + REDIRECT */
 function accept(e){
 e.stopPropagation();
 for(let i=0;i<80;i++){
