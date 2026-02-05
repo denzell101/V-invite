@@ -3,10 +3,9 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Romantic Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
 
-<title>Invite ❤️</title>
+<title>Invite</title>
 
 <style>
 
@@ -16,110 +15,132 @@ height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:radial-gradient(circle,#ffafbd,#ffc3a0);
-font-family:Montserrat;
+font-family:Quicksand;
 overflow:hidden;
+transition:background 1s;
 }
 
-/* 3D Envelope */
-.scene{
-perspective:900px;
+/* DAY SKY */
+.day{
+background:linear-gradient(#87ceeb,#ffffff);
+}
+.cloud{
+position:absolute;
+background:white;
+border-radius:50%;
+opacity:.8;
+animation:drift 60s linear infinite;
+}
+@keyframes drift{
+from{transform:translateX(-200px)}
+to{transform:translateX(120vw)}
 }
 
+/* NIGHT SKY */
+.night{
+background:#070b1a;
+}
+.star{
+position:absolute;
+width:3px;height:3px;
+background:white;
+border-radius:50%;
+}
+.moon{
+position:absolute;
+width:80px;height:80px;
+background:#fff;
+border-radius:50%;
+box-shadow:0 0 30px #fff;
+}
+
+/* Envelope */
 .envelope{
-width:320px;
-height:200px;
-background:#ff4d6d;
 position:relative;
-transform-style:preserve-3d;
-transition:1s;
+width:340px;
+height:210px;
+background:#ff4d6d;
 border-radius:10px;
+cursor:pointer;
 box-shadow:0 20px 40px rgba(0,0,0,.3);
 }
 
-/* Flap */
 .flap{
 position:absolute;
 width:100%;
-height:100px;
+height:110px;
 background:#ff758f;
-top:0;
 transform-origin:top;
 transition:1s;
 }
 
-/* Letter */
 .letter{
 position:absolute;
-width:280px;
+width:300px;
 height:160px;
 background:white;
-top:20px;
+top:25px;
 left:20px;
 display:flex;
+flex-direction:column;
 justify-content:center;
 align-items:center;
-font-family:"Great Vibes";
-font-size:26px;
+font-family:"Playfair Display";
+font-size:24px;
 color:#ff4d6d;
 transition:1s;
 }
 
-/* Open state */
-.open .flap{
-transform:rotateX(-160deg);
+button{
+margin-top:12px;
+padding:10px 24px;
+border:none;
+border-radius:8px;
+background:#ff4d6d;
+color:white;
+font-weight:600;
 }
 
+/* open animation */
+.open .flap{
+transform:rotateX(-170deg);
+}
 .open .letter{
 transform:translateY(-170px);
 }
 
-/* Button */
-button{
-margin-top:15px;
-padding:12px 22px;
-border:none;
-border-radius:8px;
-background:white;
-color:#ff4d6d;
-font-weight:bold;
-display:none;
+/* confetti rain */
+.confetti{
+position:fixed;
+top:-10px;
+font-size:18px;
+animation:fall linear forwards;
 }
-
-.open button{
-display:block;
+@keyframes fall{
+to{transform:translateY(110vh);}
 }
 
 .toggle{
 position:absolute;
-top:10px;
-right:10px;
+top:15px;
+right:20px;
+font-size:20px;
 cursor:pointer;
-}
-
-.dark{
-background:#111;
 }
 
 </style>
 </head>
 
-<body>
+<body class="day">
 
 <div class="toggle" onclick="toggleMode()">🌓</div>
 
-<div class="scene" onclick="openEnv()">
-
-<div id="env" class="envelope">
-
+<div id="env" class="envelope" onclick="openEnv()">
 <div class="flap"></div>
 
 <div class="letter">
 <span id="title"></span>
-</div>
-
 <button onclick="accept(event)">Accept ❤️</button>
-
 </div>
 </div>
 
@@ -127,36 +148,61 @@ background:#111;
 
 <script>
 
+/* Title */
 document.getElementById("title").innerText=CONFIG.title;
 
+/* sky objects */
+for(let i=0;i<5;i++){
+let c=document.createElement("div");
+c.className="cloud";
+c.style.width=60+Math.random()*60+"px";
+c.style.height=c.style.width;
+c.style.top=Math.random()*40+"%";
+document.body.appendChild(c);
+}
+
+for(let i=0;i<40;i++){
+let s=document.createElement("div");
+s.className="star";
+s.style.left=Math.random()*100+"vw";
+s.style.top=Math.random()*100+"vh";
+document.body.appendChild(s);
+}
+
+let moon=document.createElement("div");
+moon.className="moon";
+moon.style.top="40px";
+moon.style.right="40px";
+document.body.appendChild(moon);
+
+
+/* open */
 function openEnv(){
 document.getElementById("env").classList.add("open");
 }
 
+/* confetti rain */
 function accept(e){
 e.stopPropagation();
 
-/* Confetti */
-for(let i=0;i<60;i++){
+for(let i=0;i<80;i++){
 let c=document.createElement("div");
-c.innerHTML="🎉";
-c.style.position="fixed";
+c.className="confetti";
+c.innerHTML=["❤️","💖","💗","✨"][Math.floor(Math.random()*4)];
 c.style.left=Math.random()*100+"vw";
-c.style.top=Math.random()*100+"vh";
+c.style.animationDuration=(1+Math.random()*2)+"s";
 document.body.appendChild(c);
-setTimeout(()=>c.remove(),1000);
 }
 
-setTimeout(()=>{
-window.location="details.html";
-},800);
+setTimeout(()=>window.location="details.html",900);
 }
 
+/* mode toggle */
 function toggleMode(){
-document.body.classList.toggle("dark");
+document.body.classList.toggle("night");
+document.body.classList.toggle("day");
 }
 
 </script>
-
 </body>
 </html>
