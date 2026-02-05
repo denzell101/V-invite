@@ -5,6 +5,8 @@
 <title>Date Invite ❤️</title>
 
 <style>
+
+/* ===== Background Animation ===== */
 body{
     margin:0;
     font-family:sans-serif;
@@ -14,11 +16,14 @@ body{
     background-size:400% 400%;
     animation:bgMove 12s ease infinite;
 }
+
 @keyframes bgMove{
 0%{background-position:0% 50%;}
 50%{background-position:100% 50%;}
 100%{background-position:0% 50%;}
 }
+
+/* ===== Card ===== */
 .card{
     background:rgba(0,0,0,.45);
     margin:40px auto;
@@ -26,18 +31,37 @@ body{
     border-radius:12px;
     max-width:420px;
 }
+
+/* ===== Buttons ===== */
 button{
-    padding:12px 22px;
+    display:block;
+    width:100%;
+    padding:12px;
     border:none;
     border-radius:8px;
     background:#ff4d6d;
     color:white;
     font-size:16px;
-    margin-top:15px;
+    margin-top:10px;
 }
-#reveal{display:none;}
-.timer{font-size:22px;margin-top:10px;}
-iframe{border-radius:12px;margin-top:12px;}
+
+/* ===== Reveal Section ===== */
+#reveal{ display:none; }
+
+/* ===== Countdown ===== */
+.timer{
+    font-size:22px;
+    margin-top:10px;
+}
+
+/* ===== Responsive Video ===== */
+iframe{
+    width:100%;
+    height:80px;
+    border-radius:12px;
+    margin-top:12px;
+}
+
 </style>
 </head>
 
@@ -47,6 +71,7 @@ iframe{border-radius:12px;margin-top:12px;}
 <div class="card">
 
 <h1 id="title"></h1>
+
 <div id="countdown" class="timer"></div>
 
 <button onclick="accept()">Accept ❤️</button>
@@ -55,19 +80,78 @@ iframe{border-radius:12px;margin-top:12px;}
 
 <h2 id="details"></h2>
 
-<a id="maplink" target="_blank">
-<button>Open Map</button>
-</a>
+<!-- Map buttons injected here -->
+<div id="mapButtons"></div>
 
+<!-- Music -->
 <iframe id="music"
-width="100%" height="80"
-frameBorder="0"
+frameborder="0"
 allow="autoplay; encrypted-media">
 </iframe>
 
 </div>
+
 </div>
 
 
-<!-- CONFIG FILE -->
-<script src="c
+<!-- CONFIG LOAD -->
+<script src="config.js"></script>
+
+<script>
+
+/* ===== Inject Config Values ===== */
+
+document.getElementById("title").innerText = CONFIG.title;
+document.getElementById("details").innerText = CONFIG.details;
+document.getElementById("music").src = CONFIG.musicEmbed;
+
+
+/* ===== Countdown ===== */
+
+const target = new Date(CONFIG.date).getTime();
+
+setInterval(()=>{
+    let now = new Date().getTime();
+    let diff = target - now;
+
+    if(diff <= 0){
+        document.getElementById("countdown").innerHTML="It's time ❤️";
+        return;
+    }
+
+    let d=Math.floor(diff/(1000*60*60*24));
+    let h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    let m=Math.floor((diff%(1000*60*60))/(1000*60));
+
+    document.getElementById("countdown").innerHTML =
+        `${d}d ${h}h ${m}m`;
+
+},1000);
+
+
+/* ===== Render Map Buttons ===== */
+
+const mapContainer = document.getElementById("mapButtons");
+
+CONFIG.locations.forEach(loc=>{
+    const btn = document.createElement("button");
+    btn.innerText = "Open Map: " + loc.name;
+
+    btn.onclick = () => {
+        window.open(loc.link, "_blank");
+    };
+
+    mapContainer.appendChild(btn);
+});
+
+
+/* ===== Reveal ===== */
+
+function accept(){
+    document.getElementById("reveal").style.display="block";
+}
+
+</script>
+
+</body>
+</html>
