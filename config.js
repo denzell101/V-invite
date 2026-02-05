@@ -6,12 +6,20 @@ details:
 `Mind Museum Adventure 🧠
 Dinner at Arcovia 🍽️`,
 
-date: "Feb 14, 2026 13:00:00",
+date: "Feb 15, 2026 13:00:00",
 
-mapLink:
-"https://www.google.com/maps",
+/* YouTube EMBED format required */
+musicEmbed: "https://www.youtube.com/embed/u9raS7-NisU?autoplay=1&mute=1&rel=0",
 
-musicEmbed:
-"https://open.spotify.com/embed/track/1BxfuPKGuaTgP7aM0Bbdwr"
+locations: [
+{
+    name: "The Mind Museum",
+    link: "https://www.google.com/maps/place/The+Mind+Museum/@14.5522604,121.0430647,17z/data=!3m1!4b1!4m6!3m5!1s0x3397c8f0861733e7:0xf06093d1fcc13683!8m2!3d14.5522552!4d121.0456396!16s%2Fm%2F0hgld2t?entry=ttu&g_ep=EgoyMDI2MDIwMS4wIKXMDSoKLDEwMDc5MjA2N0gBUAM%3D"
+},
+{
+    name: "Arcovia City - The Vibe",
+    link: "https://www.google.com/maps/place/ArcoVia+City+Pasig/@14.578913,121.0721462,17z/data=!3m1!4b1!4m6!3m5!1s0x3397c957e8c91b7d:0x42511a293529122f!8m2!3d14.5789078!4d121.0747211!16s%2Fg%2F11j83htbsq?entry=ttu&g_ep=EgoyMDI2MDIwMS4wIKXMDSoKLDEwMDc5MjA2N0gBUAM%3D"
+}
+]
 
 };
