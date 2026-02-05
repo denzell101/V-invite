@@ -1,6 +1,6 @@
 const CONFIG = {
 
-title: "Will you be my valentine? ❤️",
+title: "Will you be my valentine?",
 
 message:
 "Hi Baby ❤️\n\nI know you wanted something like this, so I've made you one. \nPlease remember that in every Valentine's, I will always choose you for my date :) \n\n P.S. I love you so much baby!",
@@ -20,7 +20,22 @@ photos: [
     "pic2.jpg",
     "pic3.jpg"
 ],
-    
+
+
+/* Sky Pictures*/
+sky:{
+clouds:[
+"cloud1.jpg",
+"cloud2.jpg",
+"cloud3.jpg"
+],
+
+sun:"sun.jpg",
+moon:"moon.jpg"
+}
+
+};
+
 locations: [
 {
     name: "The Mind Museum",
