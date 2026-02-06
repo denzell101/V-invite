@@ -7,61 +7,85 @@
 
 <style>
 
+/* GPU isolation */
+*{
+will-change: transform;
+}
+
 body{
 margin:0;
 font-family:Quicksand;
 overflow:hidden;
-transition:background 1s;
+perspective:900px;
 }
 
-/* DAY/NIGHT BACKGROUND */
-.day{
-background:linear-gradient(#2e7ac7,#a6d5ff);
+/* Envelope Physics */
+.envelope{
+width:360px;
+height:220px;
+background:#ff4d6d;
+border-radius:12px;
+cursor:pointer;
+position:relative;
+transform-style:preserve-3d;
+transition:transform .6s cubic-bezier(.25,1.5,.5,1);
 }
-.night{
-background:#02030a;
+
+.flap{
+height:120px;
+background:#ff758f;
+transform-origin:top;
+transition:transform .9s cubic-bezier(.34,1.56,.64,1);
 }
 
-/* SKY */
-.sky{position:fixed;width:100%;height:100%;z-index:-2;overflow:hidden}
-.cloud{position:absolute;width:160%;opacity:.85;animation:drift linear infinite}
-@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-40%)}}
-
-.sun,.moon{position:absolute;width:130px;top:60px;right:60px;transition:opacity 1s}
-
-/* STARS */
-.star{
-position:absolute;
-width:3px;height:3px;
+.letter{
 background:white;
-border-radius:50%;
-box-shadow:0 0 6px white;
-animation:twinkle 2s infinite alternate
+width:320px;
+height:170px;
+position:absolute;
+top:25px;
+left:20px;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+font-family:"Playfair Display";
+font-size:22px;
+color:#ff4d6d;
+transform:translateZ(0);
+transition:transform .8s cubic-bezier(.25,1.4,.5,1);
 }
-@keyframes twinkle{from{opacity:.2}to{opacity:1}}
 
-/* ENVELOPE */
-.center{height:100vh;display:flex;align-items:center;justify-content:center}
-.envelope{width:360px;height:220px;background:#ff4d6d;border-radius:12px;cursor:pointer;position:relative;perspective:800px}
-.flap{height:120px;background:#ff758f;transform-origin:top;transition:.8s}
-.letter{background:white;width:320px;height:170px;position:absolute;top:25px;left:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Playfair Display";font-size:22px;color:#ff4d6d;transition:.8s;text-align:center}
-.open .flap{transform:rotateX(-160deg)}
-.open .letter{transform:translateY(-180px)}
+.open .flap{
+transform:rotateX(-170deg) translateZ(10px);
+}
 
-button{margin-top:10px;padding:12px 28px;border:none;border-radius:8px;background:#ff4d6d;color:white}
+.open .letter{
+transform:translateY(-180px) translateZ(60px);
+}
 
-.toggle{position:absolute;top:15px;right:20px;font-size:22px;cursor:pointer}
+/* center */
+.center{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
 
-.date{font-size:14px;color:#aa3355;margin-top:8px}
+/* button */
+button{
+margin-top:10px;
+padding:12px 28px;
+border:none;
+border-radius:8px;
+background:#ff4d6d;
+color:white;
+}
 
 </style>
 </head>
 
-<body class="day">
-
-<div class="sky" id="sky"></div>
-
-<div class="toggle" onclick="toggle()">🌓</div>
+<body>
 
 <div class="center">
 <div id="env" class="envelope" onclick="openEnv()">
@@ -69,7 +93,6 @@ button{margin-top:10px;padding:12px 28px;border:none;border-radius:8px;backgroun
 
 <div class="letter">
 <div id="title"></div>
-<div id="date" class="date"></div>
 <button onclick="accept(event)">Accept ❤️</button>
 </div>
 </div>
@@ -78,70 +101,28 @@ button{margin-top:10px;padding:12px 28px;border:none;border-radius:8px;backgroun
 <script src="config.js"></script>
 
 <script>
-
-/* TEXT */
 title.innerText=CONFIG.title;
-date.innerText="Date: "+CONFIG.date;
 
-/* SKY BUILD */
-CONFIG.sky.clouds.forEach((c,i)=>{
-let img=document.createElement("img");
-img.src=c;
-img.className="cloud";
-img.style.top=(10+i*20)+"%";
-img.style.animationDuration=(60+i*20)+"s";
-sky.appendChild(img);
-});
-
-let sun=document.createElement("img");
-sun.src=CONFIG.sky.sun;
-sun.className="sun";
-sky.appendChild(sun);
-
-let moon=document.createElement("img");
-moon.src=CONFIG.sky.moon;
-moon.className="moon";
-moon.style.opacity=0;
-sky.appendChild(moon);
-
-/* STARS */
-for(let i=0;i<150;i++){
-let s=document.createElement("div");
-s.className="star";
-s.style.left=Math.random()*100+"vw";
-s.style.top=Math.random()*100+"vh";
-document.body.appendChild(s);
+function openEnv(){
+env.classList.add("open");
 }
 
-/* MODE */
-let mode=localStorage.getItem("mode")||"day";
-apply();
-
-function toggle(){
-mode=(mode==="day")?"night":"day";
-localStorage.setItem("mode",mode);
-apply();
-}
-
-function apply(){
-document.body.className=mode;
-sun.style.opacity=(mode==="day")?1:0;
-moon.style.opacity=(mode==="night")?1:0;
-}
-
-/* ENVELOPE */
-function openEnv(){env.classList.add("open");}
-
-/* ACCEPT */
+/* physics delay before redirect */
 function accept(e){
 e.stopPropagation();
 
-/* preload music */
+env.style.transform="scale(1.05) rotateY(6deg)";
+
+setTimeout(()=>{
+env.style.transform="scale(.8) translateZ(-300px)";
+},180);
+
+setTimeout(()=>{
 localStorage.setItem("playMusic","yes");
-
 location="details.html";
+},650);
 }
-
 </script>
+
 </body>
 </html>
