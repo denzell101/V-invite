@@ -7,19 +7,82 @@
 
 <style>
 
-/* GPU isolation */
-*{
-will-change: transform;
-}
+/* ---------- BASE ---------- */
 
 body{
 margin:0;
 font-family:Quicksand;
 overflow:hidden;
-perspective:900px;
+perspective:1200px;
+transition:background 1s;
 }
 
-/* Envelope Physics */
+.day{
+background:linear-gradient(#2e7ac7,#a6d5ff);
+}
+
+.night{
+background:#02030a;
+}
+
+/* ---------- SKY ---------- */
+
+.sky{
+position:fixed;
+width:100%;
+height:100%;
+z-index:-2;
+overflow:hidden;
+transform:translateZ(0);
+}
+
+.cloud{
+position:absolute;
+width:160%;
+opacity:.85;
+animation:drift linear infinite;
+will-change:transform;
+}
+
+@keyframes drift{
+from{transform:translateX(0)}
+to{transform:translateX(-40%)}
+}
+
+.sun,.moon{
+position:absolute;
+width:130px;
+top:60px;
+right:60px;
+transition:opacity 1s;
+}
+
+/* ---------- STARS ---------- */
+
+.star{
+position:absolute;
+width:3px;
+height:3px;
+background:white;
+border-radius:50%;
+box-shadow:0 0 6px white;
+animation:twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle{
+from{opacity:.2}
+to{opacity:1}
+}
+
+/* ---------- ENVELOPE ---------- */
+
+.center{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
 .envelope{
 width:360px;
 height:220px;
@@ -29,6 +92,7 @@ cursor:pointer;
 position:relative;
 transform-style:preserve-3d;
 transition:transform .6s cubic-bezier(.25,1.5,.5,1);
+box-shadow:0 20px 40px rgba(0,0,0,.3);
 }
 
 .flap{
@@ -52,27 +116,21 @@ justify-content:center;
 font-family:"Playfair Display";
 font-size:22px;
 color:#ff4d6d;
-transform:translateZ(0);
 transition:transform .8s cubic-bezier(.25,1.4,.5,1);
 }
+
+/* OPEN ANIMATION */
 
 .open .flap{
 transform:rotateX(-170deg) translateZ(10px);
 }
 
 .open .letter{
-transform:translateY(-180px) translateZ(60px);
+transform:translateY(-180px) translateZ(80px);
 }
 
-/* center */
-.center{
-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-}
+/* BUTTON */
 
-/* button */
 button{
 margin-top:10px;
 padding:12px 28px;
@@ -80,12 +138,39 @@ border:none;
 border-radius:8px;
 background:#ff4d6d;
 color:white;
+font-size:15px;
+}
+
+/* TOGGLE */
+
+.toggle{
+position:absolute;
+top:15px;
+right:20px;
+font-size:22px;
+cursor:pointer;
+}
+
+/* CONFETTI */
+
+.confetti{
+position:fixed;
+top:-10px;
+font-size:18px;
+animation:fall linear forwards;
+}
+
+@keyframes fall{
+to{transform:translateY(110vh);}
 }
 
 </style>
 </head>
 
-<body>
+<body class="day">
+
+<div class="sky" id="sky"></div>
+<div class="toggle" onclick="toggle()">🌓</div>
 
 <div class="center">
 <div id="env" class="envelope" onclick="openEnv()">
@@ -95,34 +180,101 @@ color:white;
 <div id="title"></div>
 <button onclick="accept(event)">Accept ❤️</button>
 </div>
+
 </div>
 </div>
 
 <script src="config.js"></script>
 
 <script>
+
+/* ---------- TITLE ---------- */
+
 title.innerText=CONFIG.title;
+
+/* ---------- SKY BUILD ---------- */
+
+CONFIG.sky.clouds.forEach((c,i)=>{
+let img=document.createElement("img");
+img.src=c;
+img.className="cloud";
+img.style.top=(10+i*20)+"%";
+img.style.animationDuration=(60+i*20)+"s";
+sky.appendChild(img);
+});
+
+let sun=document.createElement("img");
+sun.src=CONFIG.sky.sun;
+sun.className="sun";
+sky.appendChild(sun);
+
+let moon=document.createElement("img");
+moon.src=CONFIG.sky.moon;
+moon.className="moon";
+moon.style.opacity=0;
+sky.appendChild(moon);
+
+/* STARS */
+
+for(let i=0;i<150;i++){
+let s=document.createElement("div");
+s.className="star";
+s.style.left=Math.random()*100+"vw";
+s.style.top=Math.random()*100+"vh";
+document.body.appendChild(s);
+}
+
+/* MODE */
+
+let mode=localStorage.getItem("mode")||"day";
+apply();
+
+function toggle(){
+mode=(mode==="day")?"night":"day";
+localStorage.setItem("mode",mode);
+apply();
+}
+
+function apply(){
+document.body.className=mode;
+sun.style.opacity=(mode==="day")?1:0;
+moon.style.opacity=(mode==="night")?1:0;
+}
+
+/* ENVELOPE OPEN */
 
 function openEnv(){
 env.classList.add("open");
 }
 
-/* physics delay before redirect */
+/* CINEMATIC ACCEPT */
+
 function accept(e){
 e.stopPropagation();
 
-env.style.transform="scale(1.05) rotateY(6deg)";
-
+/* zoom dramatic */
+env.style.transform="scale(1.08) rotateY(8deg)";
 setTimeout(()=>{
-env.style.transform="scale(.8) translateZ(-300px)";
+env.style.transform="scale(.7) translateZ(-400px)";
 },180);
+
+/* confetti */
+for(let i=0;i<90;i++){
+let c=document.createElement("div");
+c.className="confetti";
+c.innerHTML=["❤️","✨","💖"][Math.floor(Math.random()*3)];
+c.style.left=Math.random()*100+"vw";
+c.style.animationDuration=(1+Math.random()*2)+"s";
+document.body.appendChild(c);
+}
 
 setTimeout(()=>{
 localStorage.setItem("playMusic","yes");
 location="details.html";
-},650);
-}
-</script>
+},900);
 
+}
+
+</script>
 </body>
 </html>
