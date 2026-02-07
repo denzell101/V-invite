@@ -1,46 +1,43 @@
 const CONFIG = {
 
-title: "Will you be my valentine?",
+title: "Will you be my Valentine? ❤️",
 
 message:
 "Hi Baby ❤️\n\nI know you wanted something like this, so I've made you one.\nPlease remember that in every Valentine's, I will always choose you for my date :)\n\nP.S. I love you so much baby!",
 
 details:
 `Mind Museum Adventure 🧠
-Dinner at Arcovia 🍽️`,
+Dinner at EMILIA — House of Filipino Food 🍽️`,
 
 date: "Feb 15, 2026 13:00:00",
 
-/* Spotify Embed */
-musicEmbed: "https://open.spotify.com/embed/track/1fzAuUVbzlhZ1lJAx9PtY6",
+musicEmbed:
+"https://open.spotify.com/embed/track/1fzAuUVbzlhZ1lJAx9PtY6",
 
-/* Photos */
-photos: [
+photos:[
 "pic1.jpg",
 "pic2.jpg",
 "pic3.jpg"
 ],
 
-/* Sky Assets */
-sky: {
-clouds: [
+sky:{
+clouds:[
 "cloud1.jpg",
 "cloud2.jpg",
 "cloud3.jpg"
 ],
-sun: "sun.jpg",
-moon: "moon.jpg"
+sun:"sun.jpg",
+moon:"moon.jpg"
 },
 
-/* Locations */
-locations: [
+locations:[
 {
-name: "The Mind Museum",
-link: "https://www.google.com/maps/place/The+Mind+Museum/@14.5522604,121.0430647,17z/data=!3m1!4b1!4m6!3m5!1s0x3397c8f0861733e7:0xf06093d1fcc13683!8m2!3d14.5522552!4d121.0456396!16s%2Fm%2F0hgld2t"
+name:"The Mind Museum",
+link:"https://maps.app.goo.gl/FSa3uiyXRKhucbM87"
 },
 {
-name: "Arcovia City - The Vibe",
-link: "https://www.google.com/maps/place/ArcoVia+City+Pasig/@14.578913,121.0721462,17z/data=!3m1!4b1!4m6!3m5!1s0x3397c957e8c91b7d:0x42511a293529122f!8m2!3d14.5789078!4d121.0747211!16s%2Fg%2F11j83htbsq"
+name:"Dinner at EMILIA 🍽️",
+link:"https://maps.app.goo.gl/kbNYwtScLEkM9GfM9"
 }
 ]
 
