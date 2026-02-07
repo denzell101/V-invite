@@ -2,147 +2,44 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
 
 <style>
+body{margin:0;font-family:Quicksand;overflow:hidden;perspective:1200px;transition:background 1s;}
+.day{background:linear-gradient(#2e7ac7,#a6d5ff);}
+.night{background:#02030a;}
 
-body{
-margin:0;
-font-family:Quicksand;
-overflow:hidden;
-perspective:1200px;
-transition:background 1s;
-}
+.sky{position:fixed;width:100%;height:100%;z-index:-2;overflow:hidden;}
+.cloud{position:absolute;width:160%;opacity:.85;animation:drift linear infinite;}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-40%)}}
 
-.day{ background:linear-gradient(#2e7ac7,#a6d5ff); }
-.night{ background:#02030a; }
+.sun,.moon{position:absolute;width:130px;top:60px;right:60px;transition:opacity 1s;}
 
-/* SKY */
-
-.sky{
-position:fixed;
-width:100%;
-height:100%;
-z-index:-2;
-overflow:hidden;
-}
-
-.cloud{
-position:absolute;
-width:160%;
-opacity:.85;
-animation:drift linear infinite;
-}
-
-@keyframes drift{
-from{transform:translateX(0)}
-to{transform:translateX(-40%)}
-}
-
-.sun,.moon{
-position:absolute;
-width:130px;
-top:60px;
-right:60px;
-transition:opacity 1s;
-}
-
+/* ⭐ UPDATED STAR COLOR */
 .star{
 position:absolute;
 width:3px;height:3px;
-background:white;
+background:#FFD76A;
 border-radius:50%;
-box-shadow:0 0 6px white;
+box-shadow:0 0 8px #FFD76A, 0 0 14px #FFC94D;
 animation:twinkle 2s infinite alternate;
 }
 
-@keyframes twinkle{
-from{opacity:.2}
-to{opacity:1}
-}
+@keyframes twinkle{from{opacity:.3}to{opacity:1}}
 
-/* ENVELOPE */
+.center{height:100vh;display:flex;align-items:center;justify-content:center;}
+.envelope{width:360px;height:220px;background:#ff4d6d;border-radius:12px;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.25,1.5,.5,1);}
+.flap{height:120px;background:#ff758f;transform-origin:top;transition:transform .9s cubic-bezier(.34,1.56,.64,1);}
+.letter{background:white;width:320px;height:170px;position:absolute;top:25px;left:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Playfair Display";font-size:22px;color:#ff4d6d;}
 
-.center{
-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-}
+.open .flap{transform:rotateX(-170deg);}
+.open .letter{transform:translateY(-180px);}
 
-.envelope{
-width:360px;
-height:220px;
-background:#ff4d6d;
-border-radius:12px;
-cursor:pointer;
-position:relative;
-transform-style:preserve-3d;
-transition:transform .6s cubic-bezier(.25,1.5,.5,1);
-box-shadow:0 20px 40px rgba(0,0,0,.3);
-}
+button{margin-top:10px;padding:12px 28px;border:none;border-radius:8px;background:#ff4d6d;color:white;}
+.toggle{position:absolute;top:15px;right:20px;font-size:22px;cursor:pointer;}
 
-.flap{
-height:120px;
-background:#ff758f;
-transform-origin:top;
-transition:transform .9s cubic-bezier(.34,1.56,.64,1);
-}
-
-.letter{
-background:white;
-width:320px;
-height:170px;
-position:absolute;
-top:25px;
-left:20px;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-font-family:"Playfair Display";
-font-size:22px;
-color:#ff4d6d;
-transition:transform .8s cubic-bezier(.25,1.4,.5,1);
-}
-
-.open .flap{
-transform:rotateX(-170deg) translateZ(10px);
-}
-
-.open .letter{
-transform:translateY(-180px) translateZ(80px);
-}
-
-button{
-margin-top:10px;
-padding:12px 28px;
-border:none;
-border-radius:8px;
-background:#ff4d6d;
-color:white;
-}
-
-.toggle{
-position:absolute;
-top:15px;
-right:20px;
-font-size:22px;
-cursor:pointer;
-}
-
-.confetti{
-position:fixed;
-top:-10px;
-font-size:18px;
-animation:fall linear forwards;
-}
-
-@keyframes fall{
-to{transform:translateY(110vh);}
-}
-
+.confetti{position:fixed;top:-10px;font-size:18px;animation:fall linear forwards;}
+@keyframes fall{to{transform:translateY(110vh);}}
 </style>
 </head>
 
@@ -154,7 +51,6 @@ to{transform:translateY(110vh);}
 <div class="center">
 <div id="env" class="envelope" onclick="openEnv()">
 <div class="flap"></div>
-
 <div class="letter">
 <div id="title"></div>
 <button onclick="accept(event)">Accept ❤️</button>
@@ -165,30 +61,21 @@ to{transform:translateY(110vh);}
 <script src="config.js"></script>
 
 <script>
-
-/* TITLE */
 title.innerText=CONFIG.title;
 
-/* SKY */
 CONFIG.sky.clouds.forEach((c,i)=>{
 let img=document.createElement("img");
-img.src=c;
-img.className="cloud";
+img.src=c; img.className="cloud";
 img.style.top=(10+i*20)+"%";
 img.style.animationDuration=(60+i*20)+"s";
 sky.appendChild(img);
 });
 
 let sun=document.createElement("img");
-sun.src=CONFIG.sky.sun;
-sun.className="sun";
-sky.appendChild(sun);
+sun.src=CONFIG.sky.sun; sun.className="sun"; sky.appendChild(sun);
 
 let moon=document.createElement("img");
-moon.src=CONFIG.sky.moon;
-moon.className="moon";
-moon.style.opacity=0;
-sky.appendChild(moon);
+moon.src=CONFIG.sky.moon; moon.className="moon"; moon.style.opacity=0; sky.appendChild(moon);
 
 for(let i=0;i<150;i++){
 let s=document.createElement("div");
@@ -198,30 +85,16 @@ s.style.top=Math.random()*100+"vh";
 document.body.appendChild(s);
 }
 
-/* MODE */
 let mode=localStorage.getItem("mode")||"day";
 apply();
-function toggle(){
-mode=(mode==="day")?"night":"day";
-localStorage.setItem("mode",mode);
-apply();
-}
-function apply(){
-document.body.className=mode;
-sun.style.opacity=(mode==="day")?1:0;
-moon.style.opacity=(mode==="night")?1:0;
-}
+function toggle(){mode=(mode==="day")?"night":"day";localStorage.setItem("mode",mode);apply();}
+function apply(){document.body.className=mode;sun.style.opacity=(mode==="day")?1:0;moon.style.opacity=(mode==="night")?1:0;}
 
-/* ENVELOPE */
 function openEnv(){env.classList.add("open");}
 
 function accept(e){
 e.stopPropagation();
-
-env.style.transform="scale(1.08) rotateY(8deg)";
-setTimeout(()=>{env.style.transform="scale(.7) translateZ(-400px)";},180);
-
-for(let i=0;i<90;i++){
+for(let i=0;i<80;i++){
 let c=document.createElement("div");
 c.className="confetti";
 c.innerHTML=["❤️","✨","💖"][Math.floor(Math.random()*3)];
@@ -229,13 +102,8 @@ c.style.left=Math.random()*100+"vw";
 c.style.animationDuration=(1+Math.random()*2)+"s";
 document.body.appendChild(c);
 }
-
-setTimeout(()=>{
-localStorage.setItem("playMusic","yes");
-location="details.html";
-},900);
+setTimeout(()=>{localStorage.setItem("playMusic","yes");location="details.html";},900);
 }
-
 </script>
 </body>
 </html>
