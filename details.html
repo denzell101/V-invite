@@ -9,10 +9,6 @@
 
 /* ---------- BASE ---------- */
 
-*{
-box-sizing:border-box;
-}
-
 body{
 margin:0;
 font-family:Quicksand;
@@ -23,15 +19,8 @@ transition:background 1s;
 -webkit-overflow-scrolling:touch;
 }
 
-/* DAY / NIGHT BACKGROUND */
-
-.day{
-background:linear-gradient(#2e7ac7,#a6d5ff);
-}
-
-.night{
-background:#02030a;
-}
+.day{ background:linear-gradient(#2e7ac7,#a6d5ff); }
+.night{ background:#02030a; }
 
 /* ---------- SKY ---------- */
 
@@ -41,7 +30,6 @@ width:100%;
 height:100%;
 z-index:-2;
 overflow:hidden;
-transform:translateZ(0);
 }
 
 .cloud{
@@ -49,7 +37,6 @@ position:absolute;
 width:160%;
 opacity:.85;
 animation:drift linear infinite;
-will-change:transform;
 }
 
 @keyframes drift{
@@ -63,15 +50,11 @@ width:130px;
 top:60px;
 right:60px;
 transition:opacity 1s;
-will-change:opacity;
 }
-
-/* ---------- STARS ---------- */
 
 .star{
 position:absolute;
-width:3px;
-height:3px;
+width:3px;height:3px;
 background:white;
 border-radius:50%;
 box-shadow:0 0 6px white;
@@ -95,25 +78,17 @@ text-align:center;
 backdrop-filter:blur(4px);
 }
 
-/* COUNTDOWN */
-
 .timer{
 font-size:20px;
 margin:10px 0 20px;
 font-weight:600;
 }
 
-/* SLIDESHOW */
-
 img{
 width:100%;
-height:auto;
 border-radius:12px;
 transition:opacity 1s;
-will-change:opacity;
 }
-
-/* BUTTONS */
 
 button{
 width:100%;
@@ -126,8 +101,6 @@ color:white;
 font-size:15px;
 }
 
-/* MUSIC */
-
 iframe{
 width:100%;
 height:352px;
@@ -135,7 +108,7 @@ border-radius:12px;
 margin-top:15px;
 }
 
-/* FLOATING HEARTS */
+/* ---------- HEARTS ---------- */
 
 .heart{
 position:fixed;
@@ -143,17 +116,72 @@ bottom:-10px;
 font-size:18px;
 animation:float 6s linear infinite;
 z-index:-1;
-will-change:transform;
 }
 
 @keyframes float{
-to{
-transform:translateY(-110vh);
-opacity:0;
-}
+to{transform:translateY(-110vh);opacity:0;}
 }
 
-/* TOGGLE */
+/* ---------- ROUTE PANEL ---------- */
+
+.routePanel{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.85);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:999;
+}
+
+.routeCard{
+width:90%;
+max-width:600px;
+background:#111;
+padding:20px;
+border-radius:14px;
+}
+
+.routeBox{ position:relative; }
+.map{ width:100%; border-radius:12px; }
+
+.routeSVG{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+}
+
+/* path animation */
+.routeSeg{
+filter:drop-shadow(0 0 6px #ff4d6d);
+stroke-dasharray:600;
+stroke-dashoffset:600;
+animation:draw 2s ease forwards;
+}
+
+.routeSeg:nth-child(2){
+animation-delay:1.6s;
+}
+
+.pin{
+fill:#ff4d6d;
+opacity:0;
+animation:pop .6s ease forwards;
+animation-delay:3.2s;
+}
+
+@keyframes draw{
+to{stroke-dashoffset:0;}
+}
+
+@keyframes pop{
+to{opacity:1; transform:scale(1.4);}
+}
 
 .toggle{
 position:absolute;
@@ -186,82 +214,102 @@ cursor:pointer;
 
 </div>
 
+<!-- ROUTE OVERLAY -->
+<div id="routePanel" class="routePanel">
+<div class="routeCard">
+
+<h3 id="routeTitle"></h3>
+
+<div class="routeBox">
+<img src="route.jpg" class="map">
+
+<svg viewBox="0 0 500 300" class="routeSVG">
+
+<defs>
+<linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="0%">
+<stop offset="0%" stop-color="#ff7aa8"/>
+<stop offset="100%" stop-color="#ff2e63"/>
+</linearGradient>
+</defs>
+
+<path class="routeSeg"
+d="M40 250 Q150 120 250 150"
+stroke="url(#glow)" stroke-width="4" fill="none"/>
+
+<path class="routeSeg"
+d="M250 150 Q350 100 460 130"
+stroke="url(#glow)" stroke-width="4" fill="none"/>
+
+<circle class="pin" cx="40" cy="250" r="6"/>
+<circle class="pin" cx="250" cy="150" r="6"/>
+<circle class="pin" cx="460" cy="130" r="6"/>
+
+</svg>
+</div>
+
+<button onclick="openMaps()">Open in Google Maps</button>
+<button onclick="closeRoute()">Close</button>
+
+</div>
+</div>
+
 <script src="config.js"></script>
 
 <script>
 
-/* ---------- TEXT ---------- */
+/* TEXT */
+msg.innerText=CONFIG.message;
+details.innerText=CONFIG.details;
 
-msg.innerText = CONFIG.message;
-details.innerText = CONFIG.details;
-
-/* ---------- COUNTDOWN ---------- */
-
-const target = new Date(CONFIG.date).getTime();
-
+/* COUNTDOWN */
+const target=new Date(CONFIG.date).getTime();
 setInterval(()=>{
-let now = new Date().getTime();
-let diff = target - now;
-
-let d = Math.floor(diff/(1000*60*60*24));
-let h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
-let m = Math.floor((diff%(1000*60*60))/(1000*60));
-let s = Math.floor((diff%(1000*60))/1000);
-
-countdown.innerText = `Countdown: ${d}d ${h}h ${m}m ${s}s`;
+let diff=target-Date.now();
+let d=Math.floor(diff/86400000);
+let h=Math.floor((diff%86400000)/3600000);
+let m=Math.floor((diff%3600000)/60000);
+let s=Math.floor((diff%60000)/1000);
+countdown.innerText=`Countdown: ${d}d ${h}h ${m}m ${s}s`;
 },1000);
 
-/* ---------- PRELOAD IMAGES ---------- */
-
-CONFIG.photos.forEach(src=>{
-let i=new Image();
-i.src=src;
-});
-
-/* ---------- SLIDESHOW ---------- */
-
-let idx=0;
-const slide=document.getElementById("slide");
-
+/* SLIDESHOW */
+let i=0;
+CONFIG.photos.forEach(p=>{let im=new Image(); im.src=p;});
 function next(){
 slide.style.opacity=0;
-
 setTimeout(()=>{
-slide.src=CONFIG.photos[idx];
+slide.src=CONFIG.photos[i];
 slide.style.opacity=1;
-idx=(idx+1)%CONFIG.photos.length;
+i=(i+1)%CONFIG.photos.length;
 },500);
 }
-
 next();
-
 let scrolling=false;
-window.addEventListener("scroll",()=>{
-scrolling=true;
-setTimeout(()=>scrolling=false,300);
-});
+window.addEventListener("scroll",()=>{scrolling=true;setTimeout(()=>scrolling=false,300);});
+setInterval(()=>{if(!scrolling)next();},5000);
 
-setInterval(()=>{
-if(!scrolling) next();
-},5000);
-
-/* ---------- MAP BUTTONS ---------- */
-
+/* MAP BUTTONS */
+let currentLink="";
 CONFIG.locations.forEach(loc=>{
 let b=document.createElement("button");
 b.innerText=loc.name;
-b.onclick=()=>window.open(loc.link);
+b.onclick=()=>{
+routeTitle.innerText=loc.name;
+currentLink=loc.link;
+routePanel.style.display="flex";
+};
 maps.appendChild(b);
 });
 
-/* ---------- MUSIC ---------- */
+/* ROUTE CONTROL */
+function closeRoute(){routePanel.style.display="none";}
+function openMaps(){window.open(currentLink);}
 
-if(localStorage.getItem("playMusic")==="yes"){
-music.src=CONFIG.musicEmbed + "?autoplay=1";
-}
+/* MUSIC */
+if(localStorage.getItem("playMusic")==="yes")
+music.src=CONFIG.musicEmbed+"?autoplay=1";
 
-/* ---------- SKY BUILD ---------- */
-
+/* SKY BUILD */
 CONFIG.sky.clouds.forEach((c,i)=>{
 let img=document.createElement("img");
 img.src=c;
@@ -282,22 +330,12 @@ moon.className="moon";
 moon.style.opacity=0;
 sky.appendChild(moon);
 
-/* ---------- STARS ---------- */
-
 for(let i=0;i<150;i++){
 let s=document.createElement("div");
 s.className="star";
 s.style.left=Math.random()*100+"vw";
 s.style.top=Math.random()*100+"vh";
 document.body.appendChild(s);
-}
-
-/* ---------- FLOATING HEARTS ---------- */
-
-let heartRate=300;
-
-if(window.innerWidth < 700){
-heartRate=600;   // ultra smooth mobile mode
 }
 
 setInterval(()=>{
@@ -307,31 +345,20 @@ h.innerHTML="❤️";
 h.style.left=Math.random()*100+"vw";
 document.body.appendChild(h);
 setTimeout(()=>h.remove(),6000);
-},heartRate);
+}, window.innerWidth<700?600:300);
 
-/* ---------- MODE SYNC ---------- */
-
+/* MODE */
 let mode=localStorage.getItem("mode")||"day";
 apply();
-
 function toggle(){
 mode=(mode==="day")?"night":"day";
 localStorage.setItem("mode",mode);
 apply();
 }
-
 function apply(){
 document.body.className=mode;
 sun.style.opacity=(mode==="day")?1:0;
 moon.style.opacity=(mode==="night")?1:0;
-}
-
-/* ---------- MOBILE GPU THROTTLE ---------- */
-
-if(window.innerWidth < 700){
-document.querySelectorAll(".star").forEach((s,i)=>{
-if(i%2===0) s.remove();
-});
 }
 
 </script>
