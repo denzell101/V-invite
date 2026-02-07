@@ -14,46 +14,34 @@ color:white;
 transition:background 1s;
 }
 
-.day{ background:linear-gradient(#2e7ac7,#a6d5ff); }
-.night{ background:#02030a; }
+.day{background:linear-gradient(#2e7ac7,#a6d5ff);}
+.night{background:#02030a;}
 
-/* SKY LAYER */
+/* SAME SKY DEPTH SYSTEM */
 
-.sky{
-position:fixed;
-width:100%;
-height:100%;
-z-index:-2;
-overflow:hidden;
-}
-
-/* ⭐ Stars now behind everything */
+.sky{position:fixed;width:100%;height:100%;pointer-events:none;}
+.sky-back{z-index:-5;}
+.sky-mid{z-index:-4;}
+.sky-front{z-index:-3;}
 
 .star{
 position:absolute;
 width:3px;height:3px;
 background:#FFD76A;
 border-radius:50%;
-box-shadow:0 0 8px #FFD76A, 0 0 14px #FFC94D;
+box-shadow:0 0 10px #FFD76A;
 animation:twinkle 2s infinite alternate;
-z-index:0;
+transition:opacity .6s;
 }
 
-@keyframes twinkle{from{opacity:.3}to{opacity:1}}
-
-/* Clouds above stars */
+.day .star{opacity:.15;}
+.night .star{opacity:1;}
 
 .cloud{
 position:absolute;
 width:160%;
-opacity:.85;
+opacity:.9;
 animation:drift linear infinite;
-z-index:1;
-}
-
-@keyframes drift{
-from{transform:translateX(0)}
-to{transform:translateX(-40%)}
 }
 
 .sun,.moon{
@@ -62,7 +50,6 @@ width:130px;
 top:60px;
 right:60px;
 transition:opacity 1s;
-z-index:2;
 }
 
 /* CARD */
@@ -74,22 +61,20 @@ background:rgba(0,0,0,.55);
 padding:20px;
 border-radius:14px;
 text-align:center;
+z-index:10;
 position:relative;
-z-index:5;
 }
 
 img{width:100%;border-radius:12px;}
-button{
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:8px;
-background:#ff4d6d;
-color:white;
-}
+button{width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px;background:#ff4d6d;color:white;}
 
-/* ROUTE */
+.toggle{
+position:absolute;
+top:15px;right:20px;
+font-size:22px;
+cursor:pointer;
+z-index:20;
+}
 
 .routePanel{
 position:fixed;
@@ -104,23 +89,15 @@ z-index:999;
 
 .timer{font-size:20px;margin:10px 0;}
 
-/* ⭐ Toggle restored */
-
-.toggle{
-position:absolute;
-top:15px;
-right:20px;
-font-size:22px;
-cursor:pointer;
-z-index:10;
-}
-
 </style>
 </head>
 
 <body class="day">
 
-<div class="sky" id="sky"></div>
+<div class="sky sky-back" id="skyStars"></div>
+<div class="sky sky-mid" id="skyClouds"></div>
+<div class="sky sky-front" id="skyFront"></div>
+
 <div class="toggle" onclick="toggle()">🌓</div>
 
 <div class="card">
@@ -131,7 +108,6 @@ z-index:10;
 <div id="countdown" class="timer"></div>
 
 <img id="slide">
-
 <div id="maps"></div>
 
 <iframe id="music" width="100%" height="352" style="border-radius:12px"></iframe>
@@ -146,31 +122,71 @@ z-index:10;
 
 <script>
 
-/* TEXT */
 msg.innerText=CONFIG.message;
 details.innerText=CONFIG.details;
+
+/* BUILD SKY */
+
+for(let i=0;i<150;i++){
+let s=document.createElement("div");
+s.className="star";
+s.style.left=Math.random()*100+"vw";
+s.style.top=Math.random()*100+"vh";
+skyStars.appendChild(s);
+}
+
+CONFIG.sky.clouds.forEach((c,i)=>{
+let img=document.createElement("img");
+img.src=c;
+img.className="cloud";
+img.style.top=(10+i*20)+"%";
+img.style.animationDuration=(60+i*20)+"s";
+skyClouds.appendChild(img);
+});
+
+let sun=document.createElement("img");
+sun.src=CONFIG.sky.sun;
+sun.className="sun";
+skyFront.appendChild(sun);
+
+let moon=document.createElement("img");
+moon.src=CONFIG.sky.moon;
+moon.className="moon";
+moon.style.opacity=0;
+skyFront.appendChild(moon);
+
+/* MODE */
+let mode=localStorage.getItem("mode")||"day";
+apply();
+
+function toggle(){
+mode=(mode==="day")?"night":"day";
+localStorage.setItem("mode",mode);
+apply();
+}
+
+function apply(){
+document.body.className=mode;
+sun.style.opacity=(mode==="day")?1:0;
+moon.style.opacity=(mode==="night")?1:0;
+}
 
 /* COUNTDOWN */
 const target=new Date(CONFIG.date).getTime();
 setInterval(()=>{
 let diff=target-Date.now();
-let d=Math.floor(diff/86400000);
-let h=Math.floor((diff%86400000)/3600000);
-let m=Math.floor((diff%3600000)/60000);
-let s=Math.floor((diff%60000)/1000);
-countdown.innerText=`Countdown: ${d}d ${h}h ${m}m ${s}s`;
+countdown.innerText=
+Math.floor(diff/86400000)+"d "+
+Math.floor(diff%86400000/3600000)+"h "+
+Math.floor(diff%3600000/60000)+"m "+
+Math.floor(diff%60000/1000)+"s";
 },1000);
 
 /* SLIDESHOW */
 let i=0;
-CONFIG.photos.forEach(p=>{let im=new Image();im.src=p;});
 function next(){
-slide.style.opacity=0;
-setTimeout(()=>{
 slide.src=CONFIG.photos[i];
-slide.style.opacity=1;
 i=(i+1)%CONFIG.photos.length;
-},500);
 }
 next();
 setInterval(next,5000);
@@ -189,56 +205,6 @@ maps.appendChild(b);
 /* MUSIC */
 if(localStorage.getItem("playMusic")==="yes")
 music.src=CONFIG.musicEmbed+"?autoplay=1";
-
-/* SKY BUILD */
-
-/* stars */
-for(let i=0;i<150;i++){
-let s=document.createElement("div");
-s.className="star";
-s.style.left=Math.random()*100+"vw";
-s.style.top=Math.random()*100+"vh";
-sky.appendChild(s);  // ⭐ now inside sky
-}
-
-/* clouds */
-CONFIG.sky.clouds.forEach((c,i)=>{
-let img=document.createElement("img");
-img.src=c;
-img.className="cloud";
-img.style.top=(10+i*20)+"%";
-img.style.animationDuration=(60+i*20)+"s";
-sky.appendChild(img);
-});
-
-/* sun moon */
-let sun=document.createElement("img");
-sun.src=CONFIG.sky.sun;
-sun.className="sun";
-sky.appendChild(sun);
-
-let moon=document.createElement("img");
-moon.src=CONFIG.sky.moon;
-moon.className="moon";
-moon.style.opacity=0;
-sky.appendChild(moon);
-
-/* MODE SYNC */
-
-let mode=localStorage.getItem("mode")||"day";
-apply();
-
-function toggle(){
-mode=(mode==="day")?"night":"day";
-localStorage.setItem("mode",mode);
-apply();
-}
-
-function apply(){
-document.body.className=mode;
-sun.style.opacity=(mode==="day")?1:0;
-moon.style.opacity=(mode==="night")?1:0;
-}
 
 </script>
 </body>
